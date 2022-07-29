@@ -2,8 +2,6 @@ FROM golang:alpine as builder
 
 WORKDIR /workspace
 
-RUN apk --update add --no-cache ca-certificates && update-ca-certificates
-
 # Copy the Go Modules manifests
 COPY go.mod go.mod
 COPY go.sum go.sum
@@ -13,11 +11,10 @@ COPY go.sum go.sum
 RUN go mod download
 
 # Copy the go source
-COPY cmd/ cmd/
-COPY pkg/ pkg/
+COPY main.go .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o xs3 cmd/*.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o xs3 main.go
 
 FROM scratch
 
